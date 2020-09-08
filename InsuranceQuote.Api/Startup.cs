@@ -34,7 +34,7 @@ namespace InsuranceQuote.Api
                 cfg.UseSqlServer(Configuration.GetConnectionString("LocalConnectionString"));
             });
 
-            services.AddScoped<IQuoteRepo, MockQuoteRepo>();
+            services.AddScoped<IQuoteRepo, QuoteRepo>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
