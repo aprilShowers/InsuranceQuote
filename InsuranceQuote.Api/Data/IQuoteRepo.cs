@@ -11,5 +11,9 @@ namespace InsuranceQuote.Api.Data
         IEnumerable<InsuranceCustomer> GetAllCustomers();
 
         InsuranceCustomer GetCustomerById(int id);
+
+        void AddCustomer(InsuranceCustomer insuranceCustomer);
+
+        bool Save();
     }
 }

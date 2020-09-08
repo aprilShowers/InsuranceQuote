@@ -8,6 +8,11 @@ namespace InsuranceQuote.Api.Data
 {
     public class MockQuoteRepo : IQuoteRepo
     {
+        public void AddCustomer(InsuranceCustomer insuranceCustomer)
+        {
+            throw new NotImplementedException();
+        }
+
         public IEnumerable<InsuranceCustomer> GetAllCustomers()
         {
             var allCustomers = new List<InsuranceCustomer>
@@ -22,6 +27,11 @@ namespace InsuranceQuote.Api.Data
         public InsuranceCustomer GetCustomerById(int id)
         {
             return new InsuranceCustomer { Id = 1, Revenue = 65000.00m, State = "FL", Business = "Plumber" };
+        }
+
+        public bool Save()
+        {
+            throw new NotImplementedException();
         }
     }
 }

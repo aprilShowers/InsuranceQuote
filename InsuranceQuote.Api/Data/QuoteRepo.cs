@@ -14,6 +14,7 @@ namespace InsuranceQuote.Api.Data
         {
             _context = context;
         }
+
         public IEnumerable<InsuranceCustomer> GetAllCustomers()
         {
             return _context.InsuranceCustomers.ToList();
@@ -22,6 +23,18 @@ namespace InsuranceQuote.Api.Data
         public InsuranceCustomer GetCustomerById(int id)
         {
             return _context.InsuranceCustomers.Where(c => c.Id == id).FirstOrDefault();
+        }
+
+        public void AddCustomer(InsuranceCustomer insuranceCustomer)
+        {
+            if (insuranceCustomer == null) throw new ArgumentNullException(nameof(insuranceCustomer));
+
+            _context.InsuranceCustomers.Add(insuranceCustomer);
+        }
+
+        public bool Save()
+        {
+            return _context.SaveChanges() > 0;
         }
     }
 }
