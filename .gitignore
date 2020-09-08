@@ -1,0 +1,5 @@
+# Files built by Visual Studio
+*.obj
+
+# Visual Studio cache/options dir
+.vs
