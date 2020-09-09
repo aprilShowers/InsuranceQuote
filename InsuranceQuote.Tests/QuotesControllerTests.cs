@@ -1,13 +1,19 @@
 ﻿using InsuranceQuote.Api;
+using InsuranceQuote.Api.Data.Entities;
+using InsuranceQuote.Tests.Mocks;
+using InsuranceQuote.Tests.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
+
 
 namespace InsuranceQuote.Tests
 {
@@ -15,10 +21,12 @@ namespace InsuranceQuote.Tests
     {
         private readonly HttpClient _client;
 
+
         public QuotesControllerTests(WebApplicationFactory<Startup> factory)
         {
             factory.ClientOptions.BaseAddress = new Uri("http://localhost/api/quotes");
             _client = factory.CreateClient();
+
         }
 
         [Fact]
@@ -29,6 +37,51 @@ namespace InsuranceQuote.Tests
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
         }
 
+        [Fact]
+        public async Task GetCustomers_ReturnsContent()
+        {
+            var result = await _client.GetAsync("");
+
+            Assert.NotNull(result.Content);
+            Assert.True(result.Content.Headers.ContentLength > 0);
+        }
+
+        [Fact]
+        public async Task GetCustomerById_ReturnsExpectedJson()
+        {
+            var expected = "{\"id\":1,\"revenue\":82000000000.00,\"state\":\"FL\",\"business\":\"Plumber\",\"premium\":0.00}";
+
+            var result = await _client.GetStringAsync("");
+
+            Assert.Contains(expected, result);
+        }
+
+        [Fact]
+        public async Task Post_WithValidProduct_ReturnsCreated_WithExpectedLocation()
+        {
+            // Not quite working -trying alternative alternative to PostAsJsonAsync for newCustomer
+            var newCustomer = MakeCustomerCreateModel();
+            var serializeCustomer = JsonConvert.SerializeObject(newCustomer);
+            var content = new StringContent(serializeCustomer);
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            
+            var response = await _client.PostAsync("", content);
+
+            Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+            Assert.Equal($"http://localhost/api/quotes/{newCustomer.Id}", response.Headers.Location.ToString().ToLower());
+        }
+
+        private static TestCustomerCreateModel MakeCustomerCreateModel() 
+        {
+            return new TestCustomerCreateModel
+            {
+                Id = 50,
+                Revenue = 1234567,
+                State = "OH",
+                Business = "Architect"
+            };
+        }
 
     }
+
 }
