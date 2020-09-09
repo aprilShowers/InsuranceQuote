@@ -13,6 +13,11 @@ namespace InsuranceQuote.Api.Data
             throw new NotImplementedException();
         }
 
+        public void DeleteCustomer(InsuranceCustomer insuranceCustomer)
+        {
+            throw new NotImplementedException();
+        }
+
         public IEnumerable<InsuranceCustomer> GetAllCustomers()
         {
             var allCustomers = new List<InsuranceCustomer>
@@ -30,6 +35,11 @@ namespace InsuranceQuote.Api.Data
         }
 
         public bool Save()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UpdateCustomer(InsuranceCustomer insuranceCustomer)
         {
             throw new NotImplementedException();
         }

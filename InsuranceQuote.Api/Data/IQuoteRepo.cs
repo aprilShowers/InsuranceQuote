@@ -14,6 +14,10 @@ namespace InsuranceQuote.Api.Data
 
         void AddCustomer(InsuranceCustomer insuranceCustomer);
 
+        void UpdateCustomer(InsuranceCustomer insuranceCustomer);
+
+        void DeleteCustomer(InsuranceCustomer insuranceCustomer);
+
         bool Save();
     }
 }

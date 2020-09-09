@@ -17,7 +17,10 @@ namespace InsuranceQuote.Api.Profiles
 
             CreateMap<InsuranceCustomer, CustomerQuoteReadDto>()
                 .ForMember(dest => dest.Premium, opt => opt.MapFrom(src => src.Premium));
-                // map the decimal in obj to int for returndto
+            // map the decimal in obj to int for returndto
+
+            CreateMap<CustomerUpdateDto, InsuranceCustomer>()
+                .ReverseMap();
         }
     }
 }

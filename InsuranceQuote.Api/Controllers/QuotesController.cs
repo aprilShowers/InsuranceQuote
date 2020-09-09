@@ -54,11 +54,6 @@ namespace InsuranceQuote.Api.Controllers
         [HttpPost]
         public IActionResult AddNewCustomer([FromBody] CustomerCreateDto newCustomer)
         {
-            // TODO: revisit -because Revenue is a decimal, if no Revenue sent in payload,
-            // default value gets stored as 0.00 in db and premium is not calculated (0)
-            // options: make nullable in db (seems dirty), change type in db or use rangeattribute ??
-            // so meaningful errors can be logged on the BadReq resp 
-
             if (newCustomer == null || newCustomer.Revenue == 0.0m) // <- quick and dirty fix for now
             {
                 return BadRequest();
@@ -82,6 +77,32 @@ namespace InsuranceQuote.Api.Controllers
             }
         }
 
+        [HttpPut("{id:int}")]
+        public ActionResult UpdateCustomerInfo(int id, [FromBody] CustomerUpdateDto updatedCustomer)
+        {
+            var customerModel = _repo.GetCustomerById(id);
+            if (customerModel == null)
+            {
+                return NotFound();
+            }
+            _mapper.Map(updatedCustomer, customerModel);
+            _repo.UpdateCustomer(customerModel);
+            _repo.Save();
+            return NoContent();
+        }
+
+        [HttpDelete("{id:int}")]
+        public ActionResult DeleteCustomer(int id)
+        {
+            var customerModel = _repo.GetCustomerById(id);
+            if (customerModel == null)
+            {
+                return NotFound();
+            }
+            _repo.DeleteCustomer(customerModel);
+            _repo.Save();
+            return NoContent();
+        }
 
     }
 }

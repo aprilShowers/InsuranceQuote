@@ -32,9 +32,20 @@ namespace InsuranceQuote.Api.Data
             _context.InsuranceCustomers.Add(insuranceCustomer);
         }
 
+        public void UpdateCustomer(InsuranceCustomer insuranceCustomer)
+        {
+            
+        }
+
+        public void DeleteCustomer(InsuranceCustomer insuranceCustomer)
+        {
+            _context.InsuranceCustomers.Remove(insuranceCustomer);
+        }
+
         public bool Save()
         {
             return _context.SaveChanges() > 0;
         }
+
     }
 }
