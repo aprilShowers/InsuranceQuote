@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using InsuranceQuote.Api.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -33,6 +34,8 @@ namespace InsuranceQuote.Api
             {
                 cfg.UseSqlServer(Configuration.GetConnectionString("LocalConnectionString"));
             });
+
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddScoped<IQuoteRepo, QuoteRepo>();
         }
