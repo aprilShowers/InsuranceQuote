@@ -8,12 +8,6 @@ namespace InsuranceQuote.Api
 {
     public class RatingEngine
     {
-        // first get the basePremium
-        // then change calculatedPremium by multiplying by stateFactor
-        // then change that by multiplying by businessFactor
-        // then change that by multiplying by hazardFactor
-        // return and set Premium
-
         public decimal Rate(InsuranceCustomer newCustomerData)
         {
             decimal revenue = newCustomerData.Revenue;

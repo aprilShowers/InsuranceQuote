@@ -21,7 +21,6 @@ namespace InsuranceQuote.Tests
     {
         private readonly HttpClient _client;
 
-
         public QuotesControllerTests(WebApplicationFactory<Startup> factory)
         {
             factory.ClientOptions.BaseAddress = new Uri("http://localhost/api/quotes");
@@ -67,8 +66,6 @@ namespace InsuranceQuote.Tests
             var response = await _client.PostAsync("", content);
             
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
-           // not able to predict the id for the URI in response header, as it is created 
-           // real time and this is an in memory test. but it is returning created
         }
 
         private static TestCustomerCreateModel MakeCustomerCreateModel() 
