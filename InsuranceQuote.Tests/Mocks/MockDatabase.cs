@@ -13,13 +13,6 @@ namespace InsuranceQuote.Tests.Mocks
             GetDefaultCustomers();
         }
 
-        /*public static MockDatabase WithDefaultCustomers()
-        {
-            var database = new MockDatabase();
-            database.GetDefaultCustomers();
-            return database;
-        }*/
-
         public List<InsuranceCustomer> GetDefaultCustomers() => new List<InsuranceCustomer>
             {
                 new InsuranceCustomer { Id = 1, Revenue = 15500.00m, State = "FL", Business = "Plumber", Premium = 37.20m},
