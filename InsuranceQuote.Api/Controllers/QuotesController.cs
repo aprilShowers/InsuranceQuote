@@ -54,7 +54,7 @@ namespace InsuranceQuote.Api.Controllers
         [HttpPost]
         public IActionResult AddNewCustomer([FromBody] CustomerCreateDto newCustomer)
         {
-            if (newCustomer == null || newCustomer.Revenue == 0.0m) // <- quick and dirty fix for now
+            if (newCustomer == null)
             {
                 return BadRequest();
             }
@@ -85,8 +85,18 @@ namespace InsuranceQuote.Api.Controllers
             {
                 return NotFound();
             }
-            _mapper.Map(updatedCustomer, customerModel);
-            _repo.UpdateCustomer(customerModel);
+
+            updatedCustomer.Id = customerModel.Id;
+            var updatedCustomerModel = _mapper.Map(updatedCustomer, customerModel);
+
+            var calculatedPremium = ratingEngine.Rate(updatedCustomerModel);
+            _logger.LogInformation($"RatingEngine returned unrounded premium of: {calculatedPremium}");
+
+            var roundedPremium = Math.Round(calculatedPremium, 2);
+           
+            updatedCustomerModel.Premium = roundedPremium;
+            _logger.LogInformation($"Rounded premium is: {roundedPremium}");
+
             _repo.Save();
             return NoContent();
         }

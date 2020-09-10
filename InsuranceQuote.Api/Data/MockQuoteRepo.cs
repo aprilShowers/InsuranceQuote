@@ -38,10 +38,5 @@ namespace InsuranceQuote.Api.Data
         {
             throw new NotImplementedException();
         }
-
-        public void UpdateCustomer(InsuranceCustomer insuranceCustomer)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

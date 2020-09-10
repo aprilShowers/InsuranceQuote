@@ -48,8 +48,8 @@ namespace InsuranceQuote.Tests
         [Fact]
         public async Task GetCustomerById_ReturnsExpectedJson()
         {
-            var expected = "{\"id\":1,\"revenue\":82000000000.00,\"state\":\"FL\",\"business\":\"Plumber\",\"premium\":0.00}";
-
+            var expected = "{\"id\":1,\"revenue\":8200.00,\"state\":\"FL\",\"business\":\"Plumber\",\"premium\":0.00}";
+            
             var result = await _client.GetStringAsync("");
 
             Assert.Contains(expected, result);
