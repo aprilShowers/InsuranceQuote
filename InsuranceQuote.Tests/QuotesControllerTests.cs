@@ -48,11 +48,21 @@ namespace InsuranceQuote.Tests
         [Fact]
         public async Task GetCustomerById_ReturnsExpectedJson()
         {
-            var expected = "{\"id\":1,\"revenue\":8200.00,\"state\":\"FL\",\"business\":\"Plumber\",\"premium\":0.00}";
-            
-            var result = await _client.GetStringAsync("");
+            var expected = "{\"id\":3,\"revenue\":45000.00,\"state\":\"OH\",\"business\":\"Architect\",\"premium\":0.00}";
 
-            Assert.Contains(expected, result);
+            var result = await _client.GetStringAsync("http://localhost/api/quotes/3");
+
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public async Task GetCustomerInvalidId_ReturnsNotFound()
+        {
+            var expected = 404;
+
+            var result = await _client.GetAsync("http://localhost/api/quotes/88");
+
+            Assert.Contains(expected.ToString(), result.ToString());
         }
 
         [Fact]
@@ -66,6 +76,93 @@ namespace InsuranceQuote.Tests
             var response = await _client.PostAsync("", content);
             
             Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Post_WithInvalidModel_ReturnsBadRequest()
+        {
+            var invalidCustomer = new TestCustomerCreateModel
+            {
+                Revenue = 15000,
+                Business = "Plumber"
+            };
+
+            var serializeCustomer = JsonConvert.SerializeObject(invalidCustomer);
+            var content = new StringContent(serializeCustomer);
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            var response = await _client.PostAsync("", content);
+
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Put_ReturnsNoContent()
+        {
+            var customer = new TestCustomerCreateModel
+            {
+                Revenue = 15000,
+                State = "FL",
+                Business = "Plumber"
+            };
+
+            var serializeUpdatedCustomer = JsonConvert.SerializeObject(customer);
+            var stringContent = new StringContent(serializeUpdatedCustomer, Encoding.UTF8, "application/json");
+
+            var response = await _client.PutAsync("http://localhost/api/quotes/1", stringContent);
+
+            Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Put_InvalidId_ReturnsNotFound()
+        {
+            var customer = new TestCustomerCreateModel
+            {
+                Revenue = 222222,
+                State = "TX",
+                Business = "Plumber"
+            };
+
+            var serializeUpdatedCustomer = JsonConvert.SerializeObject(customer);
+            var stringContent = new StringContent(serializeUpdatedCustomer, Encoding.UTF8, "application/json");
+
+            var response = await _client.PutAsync("http://localhost/api/quotes/99", stringContent);
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Put_WithMissingData_ReturnsBadRequest()
+        {
+            var customer = new TestCustomerCreateModel
+            {
+                State = "FL",
+                Business = "Programmer"
+            };
+
+            var serializeUpdatedCustomer = JsonConvert.SerializeObject(customer);
+            var stringContent = new StringContent(serializeUpdatedCustomer, Encoding.UTF8, "application/json");
+
+            var response = await _client.PutAsync("http://localhost/api/quotes/2", stringContent);
+
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Delete_ReturnsNoContent()
+        {
+            var response = await _client.DeleteAsync("http://localhost/api/quotes/5");
+
+            Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Delete_InvalidId_ReturnsNotFound()
+        {
+            var response = await _client.DeleteAsync("http://localhost/api/quotes/777");
+
+            Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
         }
 
         private static TestCustomerCreateModel MakeCustomerCreateModel() 
