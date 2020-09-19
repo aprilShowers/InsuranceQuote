@@ -15,7 +15,7 @@ namespace InsuranceQuote.Api.Data.Entities
 
         [Required]
         [Column(TypeName = "decimal(18,2)")]
-        [Range(1.00, 9999999999999999.99, ErrorMessage = "Please enter a Revenue greater than 1")]
+        [Range(1.00, 9999999999999999.99, ErrorMessage = "Please enter a Revenue between 1 and 16 Digits")]
         public decimal Revenue { get; set; }
 
         [Required]
