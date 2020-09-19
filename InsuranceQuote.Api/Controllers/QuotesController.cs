@@ -71,8 +71,9 @@ namespace InsuranceQuote.Api.Controllers
                 _repo.AddCustomer(newCustomerModel);
                 _repo.Save();
 
+                newCustomerModel.Premium = Math.Round(newCustomerModel.Premium, MidpointRounding.ToEven);
                 var quoteReadDTO = _mapper.Map<CustomerQuoteReadDto>(newCustomerModel);
-
+                
                 return CreatedAtRoute(nameof(GetCustomerById), new { id = newCustomerModel.Id }, quoteReadDTO);
             }
         }

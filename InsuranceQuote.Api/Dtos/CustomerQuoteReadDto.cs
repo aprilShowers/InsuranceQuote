@@ -7,6 +7,6 @@ namespace InsuranceQuote.Api.Dtos
 {
     public class CustomerQuoteReadDto
     {
-        public int Premium { get; set; }
+        public long Premium { get; set; }
     }
 }
