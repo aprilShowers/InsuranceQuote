@@ -20,7 +20,7 @@ namespace InsuranceQuote.Api
             var businessResult = CalculateWithBusinessFactor(stateResult, business);
             var total = CalculateWithHazardFactor(businessResult, hazardFactor);
 
-            return newCustomerData.Premium = total;
+            return total;
         }
 
         decimal CalculateBasePremium(decimal revenue)
