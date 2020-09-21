@@ -79,11 +79,106 @@ namespace InsuranceQuote.Tests
         }
 
         [Fact]
-        public async Task Post_WithInvalidModel_ReturnsBadRequest()
+        public async Task Post_WithLargestAllowedRevenue_ReturnsCreated()
+        {
+            var customer = new TestCustomerCreateModel
+            {
+                Revenue = 8888888888888888.88m,
+                State = "FL",
+                Business = "Plumber"
+            };
+
+            var serializeCustomer = JsonConvert.SerializeObject(customer);
+            var content = new StringContent(serializeCustomer);
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            var response = await _client.PostAsync("", content);
+
+            Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Post_WithLargerThan_AllowedRevenue_ReturnsBadRequest()
+        {
+            var customer = new TestCustomerCreateModel
+            {
+                Revenue = 88888888888888885.88m,
+                State = "FL",
+                Business = "Plumber"
+            };
+
+            var serializeCustomer = JsonConvert.SerializeObject(customer);
+            var content = new StringContent(serializeCustomer);
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            var response = await _client.PostAsync("", content);
+
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Post_WithMissingState_ReturnsBadRequest()
         {
             var invalidCustomer = new TestCustomerCreateModel
             {
                 Revenue = 15000,
+                Business = "Plumber"
+            };
+
+            var serializeCustomer = JsonConvert.SerializeObject(invalidCustomer);
+            var content = new StringContent(serializeCustomer);
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            var response = await _client.PostAsync("", content);
+
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Post_WithInvalidState_ReturnsBadRequest()
+        {
+            var invalidCustomer = new TestCustomerCreateModel
+            {
+                State = "MA",
+                Revenue = 15000,
+                Business = "Plumber"
+            };
+
+            var serializeCustomer = JsonConvert.SerializeObject(invalidCustomer);
+            var content = new StringContent(serializeCustomer);
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            var response = await _client.PostAsync("", content);
+
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Post_WithInvalidBusiness_ReturnsBadRequest()
+        {
+            var invalidCustomer = new TestCustomerCreateModel
+            {
+                State = "OH",
+                Revenue = 6565000,
+                Business = "Other"
+            };
+
+            var serializeCustomer = JsonConvert.SerializeObject(invalidCustomer);
+            var content = new StringContent(serializeCustomer);
+            content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+            var response = await _client.PostAsync("", content);
+
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Post_WithInvalidRevenue_ReturnsBadRequest()
+        {
+            var invalidCustomer = new TestCustomerCreateModel
+            {
+                State = "TX",
+                Revenue = 0.5m,
                 Business = "Plumber"
             };
 
@@ -133,11 +228,29 @@ namespace InsuranceQuote.Tests
         }
 
         [Fact]
-        public async Task Put_WithMissingData_ReturnsBadRequest()
+        public async Task Put_WithMissingRevenue_ReturnsBadRequest()
         {
             var customer = new TestCustomerCreateModel
             {
                 State = "FL",
+                Business = "Programmer"
+            };
+
+            var serializeUpdatedCustomer = JsonConvert.SerializeObject(customer);
+            var stringContent = new StringContent(serializeUpdatedCustomer, Encoding.UTF8, "application/json");
+
+            var response = await _client.PutAsync("http://localhost/api/quotes/2", stringContent);
+
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
+
+        [Fact]
+        public async Task Put_WithInvalidState_ReturnsBadRequest()
+        {
+            var customer = new TestCustomerCreateModel
+            {
+                Revenue = 383838.00m,
+                State = "PA",
                 Business = "Programmer"
             };
 
