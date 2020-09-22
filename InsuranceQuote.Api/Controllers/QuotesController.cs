@@ -2,6 +2,7 @@
 using InsuranceQuote.Api.Data;
 using InsuranceQuote.Api.Data.Entities;
 using InsuranceQuote.Api.Dtos;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -76,6 +77,45 @@ namespace InsuranceQuote.Api.Controllers
                 
                 return CreatedAtRoute(nameof(GetCustomerById), new { id = newCustomerModel.Id }, quoteReadDTO);
             }
+        }
+
+        // to Patch pass this payload: -can pass multiple in replace objects into json array (comma delimited)
+        /*[
+            {
+                "op": "replace",
+                "path": "/revenue",
+                "value": "15000"
+            }
+        ]*/
+
+        [HttpPatch("{id:int}")]
+        public ActionResult PartialCustomerUpdate(int id, JsonPatchDocument<CustomerUpdateDto> patchDoc)
+        {
+            var customerModel = _repo.GetCustomerById(id);
+            if (customerModel == null)
+            {
+                return NotFound();
+            }
+
+            var insuranceCustomerToPatch = _mapper.Map<CustomerUpdateDto>(customerModel);
+            patchDoc.ApplyTo(insuranceCustomerToPatch, ModelState);
+
+            if (!TryValidateModel(insuranceCustomerToPatch))
+            {
+                return ValidationProblem(ModelState);
+            }
+            
+            _mapper.Map(insuranceCustomerToPatch, customerModel);
+
+            var calculatedPremium = ratingEngine.Rate(customerModel);
+            _logger.LogInformation($"RatingEngine returned unrounded premium of: {calculatedPremium}");
+            var roundedPremium = Math.Round(calculatedPremium, 2);
+            customerModel.Premium = roundedPremium;
+            _logger.LogInformation($"Rounded premium is: {roundedPremium}");
+
+            _repo.Save();
+
+            return NoContent();
         }
 
         [HttpPut("{id:int}")]
